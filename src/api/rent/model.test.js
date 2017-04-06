@@ -1,11 +1,13 @@
 import { Rent } from '.'
 import { User } from '../user'
+import { House } from '../house'
 
-let user, rent
+let user, rent, house
 
 beforeEach(async () => {
-  user = await User.create({ email: 'a@a.com', password: '123456' })
-  rent = await Rent.create({ guest: user, house: 'test', accepted: 'test', completed: 'test' })
+  user = await User.create({ email: 'a@a.com', password: '12345678' })
+  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
+  rent = await Rent.create({ guest: user, house: house })
 })
 
 describe('view', () => {

@@ -13,13 +13,13 @@ beforeEach(async () => {
   const anotherUser = await User.create({ email: 'b@b.com', password: '12345678' })
   userSession = signSync(user.id)
   anotherSession = signSync(anotherUser.id)
-  guest = await Guest.create({ user })
+  guest = await Guest.create({ nationality: 'Terran', user })
 })
 
 test('POST /guests 201 (user)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession })
+    .send({ access_token: userSession, nationality: 'Protoss' })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
   expect(typeof body.user).toEqual('object')

@@ -38,6 +38,6 @@ router.use('/api/v1/comments', comment)
 router.use('/api/v1/guests', guest)
 router.use('/api/v1/hosts', host)
 router.use('/api/v1/houses', house)
-router.use('/rents', rent)
+router.use('/api/v1/rents', rent)
 
 export default router

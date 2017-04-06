@@ -1,9 +1,17 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { Rent } from '.'
+import { Guest } from '../guest'
+import { House } from '../house'
 
+// in order to rent, one must have Guest capability
 export const create = ({ user, bodymen: { body } }, res, next) =>
-  Rent.create({ ...body, guest: user })
+  Guest.findOne({user: user.id, verified: true})
+    .populate('user')
+    .then(notFound(res))
+    .then(House.findById(body.house))
+    .then(notFound(res))
+    .then((house_) => house_ ? Rent.create({ house: house_, guest: user, accepted: false, completed: false }) : null)
     .then((rent) => rent.view(true))
     .then(success(res, 201))
     .catch(next)

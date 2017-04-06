@@ -17,6 +17,7 @@ const guestSchema = new Schema({
     required: true
   },
   */
+  /* moved to populate in /rents
   historyRenting: [{
     _id: {
       type: Schema.Types.ObjectId,
@@ -24,6 +25,7 @@ const guestSchema = new Schema({
       required: true
     }
   }],
+  */
   verified: {
     type: Boolean,
     required: true,

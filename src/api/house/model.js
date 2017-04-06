@@ -11,7 +11,7 @@ const houseSchema = new Schema({
     required: true
   },
   numOfMember: {
-    type: String,
+    type: Number,
     required: true
   },
   hasChildren: {
@@ -28,21 +28,22 @@ const houseSchema = new Schema({
   },
   price: {
     monthlyPrice: {
-      type: String,
+      type: Schema.Types.Number,
       required: true
     },
     electricityPrice: {
-      type: String,
+      type: Schema.Types.Number,
       required: true
     },
     waterPrice: {
-      type: String,
+      type: Schema.Types.Number,
       required: true
     }
   },
   numOfPeopleRented: {
     type: Schema.Types.Number,
-    required: true
+    required: true,
+    default: 0
   },
   numOfRemainingSlot: {
     type: Schema.Types.Number,
@@ -76,11 +77,13 @@ const houseSchema = new Schema({
       type: String
     }]
   },
+  /*
   peopleRented: [{
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   }],
+  */
   image: [{
     type: String,
     required: true
@@ -98,7 +101,7 @@ houseSchema.methods = {
     const view = {
       // simple view
       id: this.id,
-      host: this.host.view(full),
+      owner: this.owner.view(full),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

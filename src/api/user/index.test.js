@@ -277,18 +277,18 @@ const passwordMatch = async (password, userId) => {
 test('PUT /users/me/password 200 (user)', async () => {
   const { status, body } = await request(app())
     .put('/me/password')
-    .auth('a@a.com', '123456')
-    .send({ password: '654321' })
+    .auth('a@a.com', '12345678')
+    .send({ password: '87654321' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('a@a.com')
-  expect(await passwordMatch('654321', body.id)).toBe(true)
+  expect(await passwordMatch('87654321', body.id)).toBe(true)
 })
 
 test('PUT /users/me/password 400 (user) - invalid password', async () => {
   const { status, body } = await request(app())
     .put('/me/password')
-    .auth('a@a.com', '123456')
+    .auth('a@a.com', '12345678')
     .send({ password: '321' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -312,8 +312,8 @@ test('PUT /users/me/password 401', async () => {
 test('PUT /users/:id/password 200 (user)', async () => {
   const { status, body } = await request(app())
     .put(`/${user1.id}/password`)
-    .auth('a@a.com', '123456')
-    .send({ password: '654321' })
+    .auth('a@a.com', '12345678')
+    .send({ password: '65432178' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('a@a.com')
@@ -323,7 +323,7 @@ test('PUT /users/:id/password 200 (user)', async () => {
 test('PUT /users/:id/password 400 (user) - invalid password', async () => {
   const { status, body } = await request(app())
     .put(`/${user1.id}/password`)
-    .auth('a@a.com', '123456')
+    .auth('a@a.com', '12345678')
     .send({ password: '321' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
@@ -348,7 +348,7 @@ test('PUT /users/:id/password 401 (user) - invalid authentication method', async
 test('PUT /users/:id/password 401', async () => {
   const { status } = await request(app())
     .put(`/${user1.id}/password`)
-    .send({ password: '654321' })
+    .send({ password: '65432178' })
   expect(status).toBe(401)
 })
 

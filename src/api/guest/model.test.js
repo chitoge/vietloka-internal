@@ -5,7 +5,7 @@ let user, guest
 
 beforeEach(async () => {
   user = await User.create({ email: 'a@a.com', password: '12345678' })
-  guest = await Guest.create({ user })
+  guest = await Guest.create({ nationality: 'Terran', user })
 })
 
 describe('view', () => {

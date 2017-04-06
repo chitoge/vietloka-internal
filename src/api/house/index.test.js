@@ -2,27 +2,30 @@ import request from 'supertest-as-promised'
 import { signSync } from '../../services/jwt'
 import express from '../../services/express'
 import { User } from '../user'
+import { Host } from '../host'
 import routes, { House } from '.'
 
 const app = () => express(routes)
 
-let userSession, anotherSession, house
+let userSession, anotherSession, house, leHost
 
 beforeEach(async () => {
   const user = await User.create({ email: 'a@a.com', password: '12345678' })
   const anotherUser = await User.create({ email: 'b@b.com', password: '12345678' })
   userSession = signSync(user.id)
   anotherSession = signSync(anotherUser.id)
-  house = await House.create({ host: user })
+  // like requirement, this user must have host role
+  leHost = await Host.create({ user })
+  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
 })
 
-test('POST /houses 201 (user)', async () => {
+test('POST /houses 201 (user, with host role)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession })
+    .send({ access_token: userSession, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
-  expect(typeof body.host).toEqual('object')
+  expect(typeof body.owner).toEqual('object')
 })
 
 test('POST /houses 401', async () => {
@@ -59,7 +62,7 @@ test('PUT /houses/:id 200 (user)', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(house.id)
-  expect(typeof body.host).toEqual('object')
+  expect(typeof body.owner).toEqual('object')
 })
 
 test('PUT /houses/:id 401 (user) - another user', async () => {
