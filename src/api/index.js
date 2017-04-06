@@ -5,6 +5,7 @@ import comment from './comment'
 import guest from './guest'
 import host from './host'
 import house from './house'
+import rent from './rent'
 
 const router = new Router()
 
@@ -31,11 +32,12 @@ const router = new Router()
  * @apiParam {String[]} [sort=-createdAt] Order of returned items.
  * @apiParam {String[]} [fields] Fields to be returned.
  */
-router.use('/users', user)
+router.use('/api/v1/users', user)
 router.use('/auth', auth)
-router.use('/comments', comment)
-router.use('/guests', guest)
-router.use('/hosts', host)
-router.use('/houses', house)
+router.use('/api/v1/comments', comment)
+router.use('/api/v1/guests', guest)
+router.use('/api/v1/hosts', host)
+router.use('/api/v1/houses', house)
+router.use('/rents', rent)
 
 export default router

@@ -4,7 +4,7 @@ import { User } from '.'
 let user
 
 beforeEach(async () => {
-  user = await User.create({ name: 'user', email: 'a@a.com', password: '123456' })
+  user = await User.create({ name: 'user', email: 'a@a.com', password: '12345678' })
 })
 
 describe('set email', () => {
@@ -54,7 +54,7 @@ describe('view', () => {
 
 describe('authenticate', () => {
   it('returns the user when authentication succeed', async () => {
-    expect(await user.authenticate('123456')).toBe(user)
+    expect(await user.authenticate('12345678')).toBe(user)
   })
 
   it('returns false when authentication fails', async () => {

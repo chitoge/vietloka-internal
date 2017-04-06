@@ -4,8 +4,15 @@ const hostSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    unique: true
+  },
+  verified: {
+    type: Boolean,
+    required: true,
+    default: true // TODO: for development only; need to implement actual verify mechanism
   }
+  // TODO: add secure messaging mechanism
 }, {
   timestamps: true
 })

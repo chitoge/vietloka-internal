@@ -4,7 +4,7 @@ import { User } from '../user'
 let user, house
 
 beforeEach(async () => {
-  user = await User.create({ email: 'a@a.com', password: '123456' })
+  user = await User.create({ email: 'a@a.com', password: '12345678' })
   house = await House.create({ host: user })
 })
 

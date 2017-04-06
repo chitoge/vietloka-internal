@@ -4,7 +4,7 @@ import { User } from '../user'
 let user, comment
 
 beforeEach(async () => {
-  user = await User.create({ email: 'a@a.com', password: '123456' })
+  user = await User.create({ name: 'user', email: 'a@a.com', password: '12345678'})
   comment = await Comment.create({ user })
 })
 

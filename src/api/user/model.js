@@ -23,7 +23,7 @@ const userSchema = new Schema({
   name: {
     type: String,
     index: true,
-    trim: true
+    trim: true,
   },
   role: {
     type: String,
@@ -32,27 +32,21 @@ const userSchema = new Schema({
   },
   job: {
     type: String,
-    required: true,
   },
   placeOfWork: {
     type: String,
-    required: true
   },
   phoneNumber: {
     type: String,
-    required: true
   },
   identityNumber: { // also social security number?
     type: String,
-    required: true
   },
   dateOfBirth: {
     type: Schema.Types.Date,
-    required: true
   },
   gender: {
     type: String,
-    required: true
   }
 }, {
   timestamps: true

@@ -1,35 +1,39 @@
 import mongoose, { Schema } from 'mongoose'
 
-// guest-to-host comment
-const commentSchema = new Schema({
+const rentSchema = new Schema({
   guest: {
     type: Schema.ObjectId,
     ref: 'User',
     required: true
   },
-  host: {
+  house: {
     type: Schema.ObjectId,
-    ref: 'User',
+    ref: 'House',
     required: true
   },
-  content: {
-    type: String,
-    required: true
+  accepted: {
+    type: Boolean,
+    required: true,
+    default: false
   },
-  rating: {
-    type: Schema.Types.Number,
-    required: true
-  },
+  completed: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 }, {
   timestamps: true
 })
 
-commentSchema.methods = {
+rentSchema.methods = {
   view (full) {
     const view = {
       // simple view
       id: this.id,
-      user: this.user.view(full),
+      guest: this.guest.view(full),
+      house: this.house,
+      accepted: this.accepted,
+      completed: this.completed,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
@@ -41,7 +45,7 @@ commentSchema.methods = {
   }
 }
 
-const model = mongoose.model('Comment', commentSchema)
+const model = mongoose.model('Rent', rentSchema)
 
 export const schema = model.schema
 export default model

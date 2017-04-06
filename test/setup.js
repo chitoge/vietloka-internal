@@ -23,7 +23,7 @@ global.parseInt = parseInt
 global.parseFloat = parseFloat
 
 beforeAll(async () => {
-  await mockgoose(mongoose)
+  await mockgoose(mongoose);
   mongoose.connect(mongo.uri)
 })
 

@@ -3,7 +3,9 @@ import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { Guest } from '.'
 
 export const create = ({ user, body }, res, next) =>
-  Guest.create({ ...body, user })
+  Guest.findOne({user : user.id})
+    .populate('user')
+    .then(notFound(res), Guest.create({ ...body, user }))
     .then((guest) => guest.view(true))
     .then(success(res, 201))
     .catch(next)
@@ -17,6 +19,14 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
 
 export const show = ({ params }, res, next) =>
   Guest.findById(params.id)
+    .populate('user')
+    .then(notFound(res))
+    .then((guest) => guest ? guest.view() : null)
+    .then(success(res))
+    .catch(next)
+
+export const showSelf = ({ user }, res, next) =>
+  Guest.findOne({user : user.id})
     .populate('user')
     .then(notFound(res))
     .then((guest) => guest ? guest.view() : null)

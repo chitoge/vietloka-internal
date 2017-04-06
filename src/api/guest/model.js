@@ -4,7 +4,8 @@ const guestSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    unique: true
   },
   nationality: {
     type: String,
@@ -22,7 +23,12 @@ const guestSchema = new Schema({
       ref: 'House',
       required: true
     }
-  }]
+  }],
+  verified: {
+    type: Boolean,
+    required: true,
+    default: true // TODO: for development only; need to implement actual verify mechanism
+  }
 }, {
   timestamps: true
 })

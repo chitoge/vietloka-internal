@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 const houseSchema = new Schema({
   owner: {
     type: Schema.ObjectId,
-    ref: 'Host',
+    ref: 'User',
     required: true
   },
   address: {
@@ -78,7 +78,7 @@ const houseSchema = new Schema({
   },
   peopleRented: [{
     type: Schema.Types.ObjectId,
-    ref: 'Guest',
+    ref: 'User',
     required: true
   }],
   image: [{

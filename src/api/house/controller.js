@@ -1,13 +1,18 @@
 import _ from 'lodash'
 import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { House } from '.'
+import { Host } from '../host'
 
 export const create = ({ user, body }, res, next) =>
-  House.create({ ...body, host: user })
+  Host.findOne({user: user.id, verified: true})
+    .populate('user')
+    .then(notFound(res))
+    .then(House.create({ ...body, host: user }))
     .then((house) => house.view(true))
     .then(success(res, 201))
     .catch(next)
 
+// TODO: implement advanced searching
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   House.find(query, select, cursor)
     .populate('host')

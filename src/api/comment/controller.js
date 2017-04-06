@@ -1,8 +1,18 @@
 import _ from 'lodash'
 import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { Comment } from '.'
+import { Guest } from '../guest'
+import { Host } from '../host'
 
 export const create = ({ user, body }, res, next) =>
+  Guest.findOne({user: user.id}, (err, guest) => {
+    if (err) {
+      // can't find Guest role, throw error
+    }
+    Host.findOne() 
+    // TODO: check if this guest actually rented this house before; maybe post only with successful transaction?
+
+  })
   Comment.create({ ...body, user })
     .then((comment) => comment.view(true))
     .then(success(res, 201))

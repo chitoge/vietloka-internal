@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, showSelf, update, destroy } from './controller'
 export Guest, { schema } from './model'
 
 const router = new Router()
@@ -43,6 +43,17 @@ router.get('/',
  */
 router.get('/:id',
   show)
+
+/**
+ * @api {get} /guests/:id Retrieve self guest info
+ * @apiName RetrieveSelfGuest
+ * @apiGroup Guest
+ * @apiSuccess {Object} guest Guest's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Guest not found.
+ */
+router.get('/self',
+  showSelf)
 
 /**
  * @api {put} /guests/:id Update guest
