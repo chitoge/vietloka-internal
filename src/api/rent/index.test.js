@@ -8,7 +8,7 @@ import routes, { Rent } from '.'
 
 const app = () => express(routes)
 
-let userSession, adminSession, anotherUserSession, rent, house, guest
+let userSession, adminSession, anotherUserSession, rent, house, guest, anotherHouse
 
 beforeEach(async () => {
   const user = await User.create({ email: 'a@a.com', password: '12345678' })
@@ -17,18 +17,28 @@ beforeEach(async () => {
   userSession = signSync(user.id)
   anotherUserSession = signSync(anotherUser.id)
   adminSession = signSync(admin.id)
-  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
+  house = await House.create({ owner: anotherUser, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
+  anotherHouse = await House.create({ owner: user, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
   guest = await Guest.create({ nationality: 'Terran', user })
   rent = await Rent.create({ guest: user, house: house })
 })
 
+test('POST /rents 404 (user, imaginary house)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession, house: 'test' })
+  console.log(body)
+  expect(status).toBe(404)
+})
+
 test('POST /rents 201 (user, with guest role)', async () => {
+  console.log('normal')
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: userSession, house: house.id })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
-  expect(body.house).toBe(house)
+  expect(body.house).toBe(house.id)
   expect(body.accepted).toEqual(false)
   expect(body.completed).toEqual(false)
   expect(typeof body.guest).toEqual('object')
@@ -38,13 +48,6 @@ test('POST /rents 404 (user, without guest role)', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: anotherUserSession, house: house.id })
-  expect(status).toBe(404)
-})
-
-test('POST /rents 404 (user, imaginary house)', async () => {
-  const { status, body } = await request(app())
-    .post('/')
-    .send({ access_token: userSession, house: 'test' })
   expect(status).toBe(404)
 })
 
@@ -101,13 +104,13 @@ test('GET /rents/:id 404 (user)', async () => {
 test('PUT /rents/:id 200', async () => {
   const { status, body } = await request(app())
     .put(`/${rent.id}`)
-    .send({ house: 'test', accepted: 'test', completed: 'test' })
+    .send({ house: anotherHouse, accepted: true, completed: false })
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(rent.id)
-  expect(body.house).toEqual('test')
-  expect(body.accepted).toEqual('test')
-  expect(body.completed).toEqual('test')
+  expect(body.house).toEqual(anotherHouse.id)
+  expect(body.accepted).toEqual(true)
+  expect(body.completed).toEqual(false)
 })
 
 test('PUT /rents/:id 404', async () => {

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { Rent } from '.'
@@ -9,9 +10,9 @@ export const create = ({ user, bodymen: { body } }, res, next) =>
   Guest.findOne({user: user.id, verified: true})
     .populate('user')
     .then(notFound(res))
-    .then(House.findById(body.house))
+    .then((guest) => mongoose.Types.ObjectId.isValid(body.house) ? House.findById(body.house) : null)
     .then(notFound(res))
-    .then((house_) => house_ ? Rent.create({ house: house_, guest: user, accepted: false, completed: false }) : null)
+    .then((house_) => house_ ? Rent.create({ house: house_.id, guest: user, accepted: false, completed: false }) : null)
     .then((rent) => rent.view(true))
     .then(success(res, 201))
     .catch(next)
@@ -31,6 +32,8 @@ export const show = ({ params }, res, next) =>
     .then(success(res))
     .catch(next)
 
+// can only update as a Host, particularly updating completed and accepted field
+// NOTE: if it's completed without accepted, it means this request has been canceled!
 export const update = ({ bodymen: { body }, params }, res, next) =>
   Rent.findById(params.id)
     .populate('guest')

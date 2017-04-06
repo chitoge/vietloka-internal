@@ -24,8 +24,9 @@ test('POST /houses 201 (user, with host role)', async () => {
     .post('/')
     .send({ access_token: userSession, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
   expect(status).toBe(201)
+  console.log(body)
   expect(typeof body).toEqual('object')
-  expect(typeof body.owner).toEqual('object')
+  expect(typeof body.user).toEqual('object')
 })
 
 test('POST /houses 401', async () => {

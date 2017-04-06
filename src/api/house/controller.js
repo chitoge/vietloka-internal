@@ -7,8 +7,8 @@ export const create = ({ user, body }, res, next) =>
   Host.findOne({user: user.id, verified: true})
     .populate('user')
     .then(notFound(res))
-    .then(House.create({ ...body, owner: user }))
-    .then((house) => house.view(true))
+    .then(House.create({ ...body, owner: user.id }))
+    .then((house) => house.view())
     .then(success(res, 201))
     .catch(next)
 
