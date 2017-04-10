@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import user from './user'
 import auth from './auth'
-import comment from './comment'
+//import comment from './comment'
 import guest from './guest'
 import host from './host'
 import house from './house'
@@ -34,7 +34,7 @@ const router = new Router()
  */
 router.use('/api/v1/users', user)
 router.use('/auth', auth)
-router.use('/api/v1/comments', comment)
+//router.use('/api/v1/comments', comment)
 router.use('/api/v1/guests', guest)
 router.use('/api/v1/hosts', host)
 router.use('/api/v1/houses', house)
