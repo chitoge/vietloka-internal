@@ -6,7 +6,7 @@ export const create = ({ user, body }, res, next) =>
   Host.findOne({user : user.id})
     .populate('user')
     .then(notFound(res), Host.create({ ...body, user }))
-    .then((host) => host.view(true))
+    .then((host) => host.view())
     .then(success(res, 201))
     .catch(next)
 

@@ -89,8 +89,14 @@ const houseSchema = new Schema({
     required: true
   }],
   map: {
-    type: String,
-    required: true
+    lat: {
+      type: number,
+      required: true
+    },
+    lng: {
+      type: number,
+      required: true
+    }
   }
 }, {
   timestamps: true
