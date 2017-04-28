@@ -23,7 +23,7 @@ const houseSchema = new Schema({
     required: true
   },
   area: {
-    type: String,
+    type: Number,
     required: true
   },
   price: {
@@ -90,11 +90,11 @@ const houseSchema = new Schema({
   }],
   map: {
     lat: {
-      type: number,
+      type: Number,
       required: true
     },
     lng: {
-      type: number,
+      type: Number,
       required: true
     }
   }
