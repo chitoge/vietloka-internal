@@ -27,6 +27,9 @@ const houseSchema = new Schema({
     required: true
   },
   price: {
+    type: Schema.Types.Number,
+    required: true
+    /*
     monthlyPrice: {
       type: Schema.Types.Number,
       required: true
@@ -39,17 +42,21 @@ const houseSchema = new Schema({
       type: Schema.Types.Number,
       required: true
     }
+    */
   },
+  /*
   numOfPeopleRented: {
     type: Schema.Types.Number,
     required: true,
     default: 0
   },
-  numOfRemainingSlot: {
+  */
+  numOfTotalSlots: {
     type: Schema.Types.Number,
     required: true
   },
-  properties: {
+
+  //properties: {
     houseAspect: {
       type: String
     },
@@ -73,9 +80,9 @@ const houseSchema = new Schema({
       type: Boolean,
       required: true
     },
-    others: [{
+    description: {
       type: String
-    }]
+  //  }
   },
   /*
   peopleRented: [{
