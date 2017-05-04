@@ -41,8 +41,9 @@ router.get('/',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Host not found.
  */
-router.get('/:id',
-  show)
+router.get('/self',
+  token({ required: true }),
+  showSelf)
 
 /**
  * @api {get} /hosts/:id Retrieve host
@@ -52,8 +53,8 @@ router.get('/:id',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Host not found.
  */
-router.get('/self',
-  showSelf)
+router.get('/by_id/:id',
+  show)
 
 /**
  * @api {put} /hosts/:id Update host

@@ -41,7 +41,7 @@ router.get('/',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Guest not found.
  */
-router.get('/:id',
+router.get('/by_id/:id',
   show)
 
 /**
@@ -53,6 +53,7 @@ router.get('/:id',
  * @apiError 404 Guest not found.
  */
 router.get('/self',
+  token({ required: true }),
   showSelf)
 
 /**
