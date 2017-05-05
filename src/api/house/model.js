@@ -28,8 +28,7 @@ const houseSchema = new Schema({
   },
   price: {
     type: Schema.Types.Number,
-    required: true
-   
+    required: true  
   },
   
   numOfTotalSlots: {
@@ -37,7 +36,7 @@ const houseSchema = new Schema({
     required: true
   },
 
-  //properties: {
+  //properties
   houseAspect: {
     type: String
   },
