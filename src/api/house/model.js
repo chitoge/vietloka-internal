@@ -29,68 +29,42 @@ const houseSchema = new Schema({
   price: {
     type: Schema.Types.Number,
     required: true
-    /*
-    monthlyPrice: {
-      type: Schema.Types.Number,
-      required: true
-    },
-    electricityPrice: {
-      type: Schema.Types.Number,
-      required: true
-    },
-    waterPrice: {
-      type: Schema.Types.Number,
-      required: true
-    }
-    */
+   
   },
-  /*
-  numOfPeopleRented: {
-    type: Schema.Types.Number,
-    required: true,
-    default: 0
-  },
-  */
+  
   numOfTotalSlots: {
     type: Schema.Types.Number,
     required: true
   },
 
   //properties: {
-    houseAspect: {
-      type: String
-    },
-    hasElectricHeater: {
-      type: Boolean
-    },
-    hasWashingMachine: {
-      type: Boolean,
-    },
-    hasTV: {
-      type: Boolean
-    },
-    hasCarPark: {
-      type: Boolean
-    },
-    WC: {
-      type: String,
-      required: true
-    },
-    hasInternet: {
-      type: Boolean,
-      required: true
-    },
-    description: {
-      type: String
-  //  }
+  houseAspect: {
+    type: String
   },
-  /*
-  peopleRented: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+  hasElectricHeater: {
+    type: Boolean
+  },
+  hasWashingMachine: {
+    type: Boolean,
+  },
+  hasTV: {
+    type: Boolean
+  },
+  hasCarPark: {
+    type: Boolean
+  },
+  WC: {
+    type: String,
     required: true
-  }],
-  */
+  },
+  hasInternet: {
+    type: Boolean,
+    required: true
+  },
+  description: {
+    type: String
+  },
+
   image: [{
     type: String,
     required: true
