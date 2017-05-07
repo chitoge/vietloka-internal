@@ -13,13 +13,13 @@ beforeEach(async () => {
   const anotherUser = await User.create({ email: 'b@b.com', password: '12345678' })
   userSession = signSync(user.id)
   anotherSession = signSync(anotherUser.id)
-  host = await Host.create({ user })
+  host = await Host.create({ user: user })
 })
 
 test('POST /hosts 201 (user)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession })
+    .send({ access_token: anotherSession })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
   expect(typeof body.user).toEqual('object')
@@ -44,6 +44,28 @@ test('GET /hosts/:id 200', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(host.id)
+})
+
+test('GET /hosts/self 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/self`)
+    .query({ access_token: userSession })
+  expect(status).toBe(200)
+  expect(typeof body).toEqual('object')
+  expect(body.id).toEqual(host.id)
+})
+
+test('GET /hosts/self 401', async () => {
+  const { status, body } = await request(app())
+    .get(`/self`)
+  expect(status).toBe(401)
+})
+
+test('GET /hosts/self 404', async () => {
+  const { status, body } = await request(app())
+    .get(`/self`)
+    .query({ access_token: anotherSession })
+  expect(status).toBe(404)
 })
 
 test('GET /hosts/:id 404', async () => {

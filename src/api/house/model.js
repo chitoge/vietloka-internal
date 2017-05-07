@@ -86,7 +86,7 @@ houseSchema.methods = {
   view (full) {
     const view = {
       // simple view
-      id: this.id,
+      id: this._id,
       owner: this.owner.view(full),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt

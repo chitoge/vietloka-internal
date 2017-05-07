@@ -34,17 +34,6 @@ router.get('/',
   index)
 
 /**
- * @api {get} /guests/:id Retrieve guest
- * @apiName RetrieveGuest
- * @apiGroup Guest
- * @apiSuccess {Object} guest Guest's data.
- * @apiError {Object} 400 Some parameters may contain invalid values.
- * @apiError 404 Guest not found.
- */
-router.get('/by_id/:id',
-  show)
-
-/**
  * @api {get} /guests/:id Retrieve self guest info
  * @apiName RetrieveSelfGuest
  * @apiGroup Guest
@@ -55,6 +44,19 @@ router.get('/by_id/:id',
 router.get('/self',
   token({ required: true }),
   showSelf)
+
+
+/**
+ * @api {get} /guests/:id Retrieve guest
+ * @apiName RetrieveGuest
+ * @apiGroup Guest
+ * @apiSuccess {Object} guest Guest's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Guest not found.
+ */
+router.get('/:id',
+  show)
+
 
 /**
  * @api {put} /guests/:id Update guest

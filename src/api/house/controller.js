@@ -8,7 +8,7 @@ export const create = ({ user, body }, res, next) =>
     .populate('user')
     .then(notFound(res))
     .then(House.create({ ...body, owner: user.id }))
-    .then((house) => house.view())
+    .then((h) => h.view(true))
     .then(success(res, 201))
     .catch(next)
 

@@ -53,7 +53,7 @@ router.get('/self',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Host not found.
  */
-router.get('/by_id/:id',
+router.get('/:id',
   show)
 
 /**

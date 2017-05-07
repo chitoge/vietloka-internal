@@ -7,10 +7,10 @@ import routes, { House } from '.'
 
 const app = () => express(routes)
 
-let userSession, anotherSession, house, leHost
+let user, userSession, anotherSession, house, leHost
 
 beforeEach(async () => {
-  const user = await User.create({ email: 'a@a.com', password: '12345678' })
+  user = await User.create({ email: 'a@a.com', password: '12345678' })
   const anotherUser = await User.create({ email: 'b@b.com', password: '12345678' })
   userSession = signSync(user.id)
   anotherSession = signSync(anotherUser.id)
@@ -19,7 +19,16 @@ beforeEach(async () => {
   house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
 })
 
-test('POST /houses 201 (user, with host role)', async () => {
+test('POST /houses 201, then GET /houses/:id (user, with host role)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  expect(status).toBe(201)
+  expect(typeof body).toEqual('object')
+  expect(typeof body.user).toEqual('object')
+})
+
+test('POST /houses 201 (user, with host role) (issue #7)', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: userSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
@@ -27,6 +36,16 @@ test('POST /houses 201 (user, with host role)', async () => {
   console.log(body)
   expect(typeof body).toEqual('object')
   expect(typeof body.user).toEqual('object')
+  // check actual correct user.id
+  expect(body.user.id).toEqual(user.id)
+  // check GET-able house.id
+  let house_id = body.id
+  const { get_status, get_body } = await request(app())
+    .get(`/${house_id}`)
+  console.log(get_body)
+  expect(get_status).toBe(200)
+  expect(typeof get_body).toEqual('object')
+  expect(get_body.id).toEqual(house.id)
 })
 
 test('POST /houses 401', async () => {
