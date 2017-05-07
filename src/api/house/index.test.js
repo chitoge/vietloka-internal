@@ -16,13 +16,13 @@ beforeEach(async () => {
   anotherSession = signSync(anotherUser.id)
   // like requirement, this user must have host role
   leHost = await Host.create({ user })
-  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
+  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78} })
 })
 
 test('POST /houses 201 (user, with host role)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Outskirt', price: {monthlyPrice: 12346, electricityPrice: 1213, waterPrice: 1242}, numOfRemainingSlot: 2, properties: {WC: 'of course we do have', hasInternet: true}, image: ['abc.jpg', 'def.tga'], map: "lat long isn't it" })
+    .send({ access_token: userSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 'Inner', price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78} })
   expect(status).toBe(201)
   console.log(body)
   expect(typeof body).toEqual('object')
