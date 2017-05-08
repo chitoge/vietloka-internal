@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, update, destroy, showSelf } from './controller'
 export House, { schema } from './model'
 
 const router = new Router()
@@ -32,6 +32,18 @@ router.post('/',
 router.get('/',
   query(),
   index)
+
+/**
+ * @api {get} /houses/:id Retrieve house
+ * @apiName RetrieveHouse
+ * @apiGroup House
+ * @apiSuccess {Object} house House's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 House not found.
+ */
+router.get('/mine',
+  token({ required: true }),
+  showSelf)
 
 /**
  * @api {get} /houses/:id Retrieve house

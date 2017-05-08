@@ -28,6 +28,13 @@ export const show = ({ params }, res, next) =>
     .then(success(res))
     .catch(next)
 
+export const showSelf = ({ user }, res, next) =>
+  House.find({owner : user})
+    .populate('owner')
+    .then((houses) => houses.map((house) => house.view()))
+    .then(success(res))
+    .catch(next)
+
 export const update = ({ user, body, params }, res, next) =>
   House.findById(params.id)
     .populate('owner')
