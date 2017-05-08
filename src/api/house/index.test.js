@@ -16,14 +16,14 @@ beforeEach(async () => {
   anotherSession = signSync(anotherUser.id)
   // like requirement, this user must have host role
   leHost = await Host.create({ user })
-  house = await House.create({ owner: user, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
-  otherHouse = await House.create({ owner: anotherUser, address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  house = await House.create({ owner: user, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  otherHouse = await House.create({ owner: anotherUser, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
 })
 
 test('POST /houses 201 (user, with host role)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+    .send({ access_token: userSession, title: 'Other clickbaits', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
   expect(typeof body.owner).toEqual('object')
@@ -34,7 +34,7 @@ test('POST /houses 201 (user, with host role)', async () => {
 test('POST /houses 404 (user, without host role)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: anotherSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+    .send({ access_token: anotherSession, title: 'Other clickbaits', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
   expect(status).toBe(404)
 })
 

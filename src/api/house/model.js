@@ -6,6 +6,10 @@ const houseSchema = new Schema({
     ref: 'User',
     required: true
   },
+  title: {
+    type: String,
+    required: true 
+  },
   address: {
     type: String,
     required: true
