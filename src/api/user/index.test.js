@@ -69,6 +69,8 @@ test('GET /users/me 200 (user)', async () => {
   const { status, body } = await request(app())
     .get('/me')
     .query({ access_token: session1 })
+  console.log('users me')
+  console.log(body)
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.id).toBe(user1.id)
@@ -83,6 +85,8 @@ test('GET /users/me 401', async () => {
 test('GET /users/:id 200', async () => {
   const { status, body } = await request(app())
     .get(`/${user1.id}`)
+  console.log('users id')
+  console.log(body)
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.id).toBe(user1.id)

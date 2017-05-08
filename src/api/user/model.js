@@ -25,6 +25,9 @@ const userSchema = new Schema({
     index: true,
     trim: true,
   },
+  picture: {
+    type: String
+  },
   role: {
     type: String,
     enum: roles,
@@ -66,6 +69,11 @@ userSchema.path('email').set(function (email) {
 })
 
 userSchema.pre('save', function (next) {
+  if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {
+    const hash = crypto.createHash('md5').update(this.email).digest('hex')
+    this.picture = `https://gravatar.com/avatar/${hash}?d=identicon`
+  }
+
   if (!this.isModified('password')) return next()
 
   /* istanbul ignore next */

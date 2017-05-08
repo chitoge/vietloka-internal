@@ -28,6 +28,15 @@ test('POST /houses 201, then GET /houses/:id (user, with host role)', async () =
   expect(typeof body.user).toEqual('object')
 })
 
+test('POST /houses 404 (user, without host role)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: anotherSession, address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  expect(status).toBe(404)
+  expect(typeof body).toEqual('object')
+  expect(typeof body.user).toEqual('object')
+})
+
 test('POST /houses 201 (user, with host role) (issue #7)', async () => {
   const { status, body } = await request(app())
     .post('/')

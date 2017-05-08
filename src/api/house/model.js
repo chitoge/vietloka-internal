@@ -93,7 +93,7 @@ houseSchema.methods = {
     }
 
     return full ? {
-      ...view
+      ...this
       // add properties for a full view
     } : view
   }

@@ -23,6 +23,10 @@ hostSchema.methods = {
       // simple view
       id: this.id,
       user: this.user.view(full),
+      job: this.user.job,
+      placeOfWork: this.user.placeOfWork,
+      gender: this.user.gender,
+      dateOfBirth: this.user.dateOfBirth,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
