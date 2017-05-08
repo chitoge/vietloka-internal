@@ -44,6 +44,7 @@ test('GET /guests/:id 200', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(guest.id)
+  expect(body.nationality).toBe(guest.nationality)
 })
 
 test('GET /guests/self 200', async () => {
@@ -53,6 +54,7 @@ test('GET /guests/self 200', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(guest.id)
+  expect(body.nationality).toBe(guest.nationality)
 })
 
 test('GET /guests/self 401', async () => {

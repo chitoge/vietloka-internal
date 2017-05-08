@@ -17,6 +17,7 @@ describe('view', () => {
     expect(view.user.id).toBe(user.id)
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()
+    expect(view.nationality).toBe(guest.nationality)
   })
 
   it('returns full view', () => {
@@ -27,5 +28,6 @@ describe('view', () => {
     expect(view.user.id).toBe(user.id)
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()
+    expect(view.nationality).toBe(guest.nationality)
   })
 })

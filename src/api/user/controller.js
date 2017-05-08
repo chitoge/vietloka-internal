@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
+import { Host } from '../host'
+import { Guest } from '../guest'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.find(query, select, cursor)
@@ -12,6 +14,24 @@ export const show = ({ params }, res, next) =>
   User.findById(params.id)
     .then(notFound(res))
     .then((user) => user ? user.view() : null)
+    .then(success(res))
+    .catch(next)
+
+export const showHost = ({ params }, res, next) =>
+  User.findById(params.id)
+    .then(notFound(res))
+    .then((user) => Host.findOne({user: user}).populate('user'))
+    .then(notFound(res))
+    .then((host) => host ? host.view(true) : null)
+    .then(success(res))
+    .catch(next)
+
+export const showGuest = ({ params }, res, next) =>
+  User.findById(params.id)
+    .then(notFound(res))
+    .then((user) => Guest.findOne({user: user}).populate('user'))
+    .then(notFound(res))
+    .then((guest) => guest ? guest.view() : null)
     .then(success(res))
     .catch(next)
 

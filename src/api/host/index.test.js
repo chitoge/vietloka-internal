@@ -6,10 +6,10 @@ import routes, { Host } from '.'
 
 const app = () => express(routes)
 
-let userSession, anotherSession, host
+let user, userSession, anotherSession, host
 
 beforeEach(async () => {
-  const user = await User.create({ email: 'a@a.com', password: '12345678' })
+  user = await User.create({ email: 'a@a.com', password: '12345678', job: 'Developer' })
   const anotherUser = await User.create({ email: 'b@b.com', password: '12345678' })
   userSession = signSync(user.id)
   anotherSession = signSync(anotherUser.id)
@@ -44,6 +44,7 @@ test('GET /hosts/:id 200', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(host.id)
+  expect(body.job).toBe(user.job)
 })
 
 test('GET /hosts/self 200', async () => {
@@ -53,6 +54,7 @@ test('GET /hosts/self 200', async () => {
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(host.id)
+  expect(body.job).toBe(user.job)
 })
 
 test('GET /hosts/self 401', async () => {

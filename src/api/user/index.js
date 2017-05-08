@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { password as passwordAuth, master, token } from '../../services/passport'
-import { index, showMe, show, create, update, updatePassword, destroy } from './controller'
+import { index, showMe, show, create, update, updatePassword, destroy, showHost, showGuest } from './controller'
 import { schema } from './model'
 export User, { schema } from './model'
 
@@ -47,6 +47,28 @@ router.get('/me',
  */
 router.get('/:id',
   show)
+
+/**
+ * @api {get} /users/:id/as_host Retrieve user host's profile
+ * @apiName RetrieveUserAsHost
+ * @apiGroup User
+ * @apiPermission public
+ * @apiSuccess {Object} user User's data.
+ * @apiError 404 User/Host not found.
+ */
+router.get('/:id/as_host',
+  showHost)
+
+/**
+ * @api {get} /users/:id/as_guest Retrieve user guest's profile
+ * @apiName RetrieveUserAsGuest
+ * @apiGroup User
+ * @apiPermission public
+ * @apiSuccess {Object} user User's data.
+ * @apiError 404 User/Guest not found.
+ */
+router.get('/:id/as_guest',
+  showGuest)
 
 /**
  * @api {post} /users Create user

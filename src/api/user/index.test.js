@@ -3,15 +3,19 @@ import { masterKey } from '../../config'
 import { signSync } from '../../services/jwt'
 import express from '../../services/express'
 import routes, { User } from '.'
+import { Host } from '../host'
+import { Guest } from '../guest'
 
 const app = () => express(routes)
 
-let user1, user2, admin, session1, session2, adminSession
+let user1, user2, admin, session1, session2, adminSession, hostRole, guestRole
 
 beforeEach(async () => {
-  user1 = await User.create({ name: 'user', email: 'a@a.com', password: '12345678' })
+  user1 = await User.create({ name: 'user', email: 'a@a.com', password: '12345678', job: 'MEAN Developer' })
   user2 = await User.create({ name: 'user', email: 'b@b.com', password: '12345678' })
   admin = await User.create({ email: 'c@c.com', password: '12345678', role: 'admin' })
+  hostRole = await Host.create({ user: user1 })
+  guestRole = await Guest.create({ nationality: 'Terran', user: user1 })
   session1 = signSync(user1.id)
   session2 = signSync(user2.id)
   adminSession = signSync(admin.id)
@@ -69,8 +73,6 @@ test('GET /users/me 200 (user)', async () => {
   const { status, body } = await request(app())
     .get('/me')
     .query({ access_token: session1 })
-  console.log('users me')
-  console.log(body)
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.id).toBe(user1.id)
@@ -85,11 +87,51 @@ test('GET /users/me 401', async () => {
 test('GET /users/:id 200', async () => {
   const { status, body } = await request(app())
     .get(`/${user1.id}`)
-  console.log('users id')
-  console.log(body)
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.id).toBe(user1.id)
+})
+
+test('GET /users/:id/as_host 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${user1.id}/as_host`)
+  expect(status).toBe(200)
+  expect(typeof body).toBe('object')
+  expect(body.user.id).toBe(user1.id)
+  expect(body.job).toBe(user1.job)
+})
+
+test('GET /users/:id/as_guest 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${user1.id}/as_guest`)
+  expect(status).toBe(200)
+  expect(typeof body).toBe('object')
+  expect(body.user.id).toBe(user1.id)
+  expect(body.nationality).toBe(guestRole.nationality)
+})
+
+test('GET /users/:id/as_host 404 (no user)', async () => {
+  const { status, body } = await request(app())
+    .get(`/123456789098765432123456/as_host`)
+  expect(status).toBe(404)
+})
+
+test('GET /users/:id/as_guest 404 (no user)', async () => {
+  const { status, body } = await request(app())
+    .get(`/123456789098765432123456/as_guest`)
+  expect(status).toBe(404)
+})
+
+test('GET /users/:id/as_host 404 (no role)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${user2.id}/as_host`)
+  expect(status).toBe(404)
+})
+
+test('GET /users/:id/as_guest 404 (no role)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${user2.id}/as_guest`)
+  expect(status).toBe(404)
 })
 
 test('GET /users/:id 404', async () => {

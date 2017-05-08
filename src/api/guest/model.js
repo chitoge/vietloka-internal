@@ -41,6 +41,7 @@ guestSchema.methods = {
       // simple view
       id: this.id,
       user: this.user.view(full),
+      nationality: this.nationality,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

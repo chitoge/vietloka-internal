@@ -24,7 +24,7 @@ export const show = ({ params }, res, next) =>
   House.findById(params.id)
     .populate('owner')
     .then(notFound(res))
-    .then((house) => house ? house.view() : null)
+    .then((house) => house ? house.view(true) : null)
     .then(success(res))
     .catch(next)
 
