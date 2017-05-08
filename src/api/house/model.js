@@ -86,14 +86,30 @@ houseSchema.methods = {
   view (full) {
     const view = {
       // simple view
-      id: this._id,
+      id: this.id,
       owner: this.owner.view(full),
+      address: this.address,
+      numOfMember: this.numOfMember,
+      hasChildren: this.hasChildren,
+      hasOlders: this.hasOlders,
+      ares: this.area,
+      price: this.price,
+      numOfTotalSlots: this.numOfTotalSlots,
+      houseAspect: this.houseAspect,
+      hasElectricHeater: this.hasElectricHeater,
+      hasWashingMachine: this.hasWashingMachine,
+      hasTV: this.hasTV,
+      WC: this.WC,
+      hasInternet: this.hasInternet,
+      description: this.description,
+      image: this.image,
+      map: this.map,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
 
     return full ? {
-      ...this
+      ...view
       // add properties for a full view
     } : view
   }
