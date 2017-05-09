@@ -90,12 +90,13 @@ houseSchema.methods = {
     const view = {
       // simple view
       id: this.id,
+      title: this.title,
       owner: this.owner.view(full),
       address: this.address,
       numOfMember: this.numOfMember,
       hasChildren: this.hasChildren,
       hasOlders: this.hasOlders,
-      ares: this.area,
+      area: this.area,
       price: this.price,
       numOfTotalSlots: this.numOfTotalSlots,
       houseAspect: this.houseAspect,
