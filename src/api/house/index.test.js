@@ -3,6 +3,8 @@ import { signSync } from '../../services/jwt'
 import express from '../../services/express'
 import { User } from '../user'
 import { Host } from '../host'
+import { Rent } from '../rent'
+import { Comment } from '../comment'
 import routes, { House } from '.'
 
 const app = () => express(routes)
@@ -18,6 +20,23 @@ beforeEach(async () => {
   leHost = await Host.create({ user })
   house = await House.create({ owner: user, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
   otherHouse = await House.create({ owner: anotherUser, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  const rent_1 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_2 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_3 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_4 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_5 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_6 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_7 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_8 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const otherRent_1 = await Rent.create({ guest: user, house: otherHouse, accepted: true, completed: true })
+  const otherRent_2 = await Rent.create({ guest: user, house: otherHouse, accepted: true, completed: true })
+  const comment_1 = await Comment.create({ guest: user, rent: rent_1, title: "Feels good man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: true })
+  const comment_2 = await Comment.create({ guest: user, rent: rent_2, title: "Feels good man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: true })
+  const comment_3 = await Comment.create({ guest: user, rent: rent_3, title: "Feels good man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: true })
+  const comment_4 = await Comment.create({ guest: user, rent: rent_4, title: "Feels good man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: true })
+  const comment_5 = await Comment.create({ guest: user, rent: rent_5, title: "Feels bad man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: false })
+  const comment_6 = await Comment.create({ guest: user, rent: rent_6, title: "Feels bad man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: false })
+  const comment_7 = await Comment.create({ guest: user, rent: rent_7, title: "Feels bad man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: false })
 })
 
 test('POST /houses 201 (user, with host role)', async () => {
@@ -76,6 +95,21 @@ test('GET /houses/:id 200', async () => {
   expect(typeof body).toEqual('object')
   expect(body.id).toBe(house.id)
   expect(body.address).toBeTruthy()
+})
+
+test('GET /houses/:id/ratings 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${house.id}/ratings`)
+  expect(status).toBe(200)
+  expect(body.approval).toBe(4)
+  expect(body.disapproval).toBe(3)
+})
+
+test('GET /houses/:id/comments 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${house.id}/comments`)
+  expect(status).toBe(200)
+  expect(Array.isArray(body)).toBe(true)
 })
 
 test('GET /houses/:id 404', async () => {

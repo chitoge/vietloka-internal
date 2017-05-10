@@ -2,6 +2,8 @@ import _ from 'lodash'
 import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { House } from '.'
 import { Host } from '../host'
+import { Rent } from '../rent'
+import { Comment } from '../comment'
 
 export const create = ({ user, body }, res, next) =>
   Host.findOne({user: user.id, verified: true})
@@ -27,6 +29,32 @@ export const show = ({ params }, res, next) =>
     .then((house) => house ? house.view(true) : null)
     .then(success(res))
     .catch(next)
+
+// count ratings
+export const showRating = ({ params }, res, next) =>
+  House.findById(params.id)
+    .populate('owner')
+    .then(notFound(res))
+    .then((house) => house ? Rent.find({house: house, accepted: true, completed: true}, "_id") : null)
+    .then((rents) => Promise.all(rents.map((rent) => Comment.findOne({rent: rent}, {approves: true}))))
+    .then((ratings) => ratings.reduce((accumulate, current) => current ? 
+      (current.approves ? {approval: accumulate.approval+1, disapproval: accumulate.disapproval} 
+                        : {approval: accumulate.approval, disapproval: accumulate.disapproval+1})
+                                                                       : accumulate, {approval: 0, disapproval: 0}))
+    .then(success(res))
+    .catch(next)
+
+// show all comments about this house; returns id only
+export const showComments = ({ params }, res, next) =>
+  House.findById(params.id)
+    .populate('owner')
+    .then(notFound(res))
+    .then((house) => house ? Rent.find({house: house, accepted: true, completed: true}, "_id") : null)
+    .then((rents) => Promise.all(rents.map((rent) => Comment.findOne({rent: rent}, {_id: true}))))
+    .then((comments) => comments.filter(Boolean))
+    .then((comments) => comments.map((cmt) => cmt._id))
+    .then(success(res))
+    .catch(console.log(next))
 
 export const showSelf = ({ user }, res, next) =>
   House.find({owner : user})

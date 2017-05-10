@@ -83,8 +83,17 @@ export const index = ({ querymen: { query, select, cursor } }, res, next) =>
 export const show = ({ params }, res, next) =>
   Rent.findById(params.id)
     .populate('guest')
+    .populate('house')
     .then(notFound(res))
     .then((rent) => rent ? rent.view() : null)
+    .then(success(res))
+    .catch(next)
+
+export const showSelf = ({ user }, res, next) =>
+  Rent.find({guest : user})
+    .populate('guest')
+    .populate('house')
+    .then((rents) => rents.map((rent) => rent.view()))
     .then(success(res))
     .catch(next)
 

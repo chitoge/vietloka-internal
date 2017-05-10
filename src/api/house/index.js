@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showSelf } from './controller'
+import { create, index, show, update, destroy, showSelf, showRating, showComments } from './controller'
 export House, { schema } from './model'
 
 const router = new Router()
@@ -55,6 +55,12 @@ router.get('/mine',
  */
 router.get('/:id',
   show)
+
+router.get('/:id/ratings',
+  showRating)
+
+router.get('/:id/comments',
+  showComments)
 
 /**
  * @api {put} /houses/:id Update house

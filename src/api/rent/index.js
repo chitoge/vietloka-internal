@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, destroy, hostConfirm, hostCancel, guestFinish } from './controller'
+import { create, index, show, destroy, hostConfirm, hostCancel, guestFinish, showSelf } from './controller'
 import { schema } from './model'
 export Rent, { schema } from './model'
 
@@ -43,6 +43,21 @@ router.get('/',
   token({ required: true, roles: ['admin'] }),
   query(),
   index)
+
+/**
+ * @api {get} /rents/:id Retrieve rent
+ * @apiName RetrieveRent
+ * @apiGroup Rent
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Object} rent Rent's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Rent not found.
+ * @apiError 401 user access only.
+ */
+router.get('/mine',
+  token({ required: true }),
+  showSelf)
 
 /**
  * @api {get} /rents/:id Retrieve rent
