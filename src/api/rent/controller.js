@@ -36,6 +36,17 @@ export const checkIncomplete = (res) => (current_rent) => {
   return null
 }
 
+export const checkComplete = (res) => (current_rent) => {
+  if (current_rent) {
+    if (current_rent.completed) {
+      return current_rent
+    }
+    res.status(401).end()
+  }
+  return null
+}
+
+
 export const checkCustomer = (res, user) => (current_rent) => {
   if (current_rent) {
     if (current_rent.guest.equals(user.id)) {

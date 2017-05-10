@@ -7,17 +7,24 @@ const commentSchema = new Schema({
     ref: 'User',
     required: true
   },
-  host: {
-    type: Schema.ObjectId,
-    ref: 'User',
+  title: {
+    type: String,
     required: true
+  },
+  rent: {
+    type: Schema.ObjectId,
+    ref: 'Rent',
+    required: true,
+    unique: true // so only 1 comment per rent
   },
   content: {
     type: String,
     required: true
   },
-  rating: {
-    type: Schema.Types.Number,
+  // NOTE: approves here means house is good or bad; doesn't mean that the content is approved by a moderator
+  // considering adding that next
+  approves: {
+    type: Boolean,
     required: true
   },
 }, {
@@ -29,13 +36,18 @@ commentSchema.methods = {
     const view = {
       // simple view
       id: this.id,
-      user: this.user.view(full),
+      guest: this.guest.view(full),
+      house: this.rent.house.id,
+      title: this.title,
+      content: this.content,
+      approves: this.approves,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
 
     return full ? {
-      ...view
+      ...view,
+      rent: this.rent.view(full)
       // add properties for a full view
     } : view
   }
