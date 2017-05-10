@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, destroy, hostConfirm, hostCancel, guestFinish } from './controller'
 import { schema } from './model'
 export Rent, { schema } from './model'
 
@@ -60,19 +60,47 @@ router.get('/:id',
   show)
 
 /**
- * @api {put} /rents/:id Update rent
- * @apiName UpdateRent
+ * @api {get} /rents/:id Retrieve rent
+ * @apiName RetrieveRent
  * @apiGroup Rent
- * @apiParam house Rent's house.
- * @apiParam accepted Rent's accepted.
- * @apiParam completed Rent's completed.
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
  * @apiSuccess {Object} rent Rent's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Rent not found.
+ * @apiError 401 user access only.
  */
-router.put('/:id',
-  body({ house, accepted, completed }),
-  update)
+router.get('/:id/confirm',
+  hostConfirm)
+
+/**
+ * @api {get} /rents/:id Retrieve rent
+ * @apiName RetrieveRent
+ * @apiGroup Rent
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Object} rent Rent's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Rent not found.
+ * @apiError 401 user access only.
+ */
+router.get('/:id/cancel',
+  hostCancel)
+
+/**
+ * @api {put} /rents/:id Retrieve rent
+ * @apiName RetrieveRent
+ * @apiGroup Rent
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Object} rent Rent's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Rent not found.
+ * @apiError 401 user access only.
+ */
+router.put('/:id/finish',
+  token({ required: true }),
+  guestFinish)
 
 /**
  * @api {delete} /rents/:id Delete rent

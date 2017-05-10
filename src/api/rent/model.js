@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import crypto from 'crypto'
 
 const rentSchema = new Schema({
   guest: {
@@ -11,6 +12,12 @@ const rentSchema = new Schema({
     ref: 'House',
     required: true
   },
+  confirmation_token: {
+    type: String,
+    required: true,
+    default: crypto.randomBytes(32).toString('hex')
+  },
+  // TODO: add to House schema a CSRF token to prevent illegal requests
   accepted: {
     type: Boolean,
     required: true,
@@ -35,7 +42,9 @@ rentSchema.methods = {
       accepted: this.accepted,
       completed: this.completed,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
+      // for development purposes only, send confirmation URL directly back to the creator
+      dev_confirmation_link: '/rents/' + this.id.toString() + '/confirm?otp_token=' + this.confirmation_token
     }
 
     return full ? {

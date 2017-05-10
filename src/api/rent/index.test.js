@@ -8,7 +8,7 @@ import routes, { Rent } from '.'
 
 const app = () => express(routes)
 
-let userSession, adminSession, anotherUserSession, rent, house, guest, anotherHouse
+let userSession, adminSession, anotherUserSession, rent, house, guest, anotherHouse, rent_confirmed, rent_completed, rent_refused
 
 beforeEach(async () => {
   const user = await User.create({ email: 'a@a.com', password: '12345678' })
@@ -21,18 +21,19 @@ beforeEach(async () => {
   anotherHouse = await House.create({ owner: user, title: 'what', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   guest = await Guest.create({ nationality: 'Terran', user })
   rent = await Rent.create({ guest: user, house: house })
+  rent_confirmed = await Rent.create({ guest: user, house: house, accepted: true, completed: false })
+  rent_completed = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  rent_refused = await Rent.create({ guest: user, house: house, accepted: false, completed: true })
 })
 
 test('POST /rents 404 (user, imaginary house)', async () => {
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: userSession, house: 'test' })
-  console.log(body)
   expect(status).toBe(404)
 })
 
 test('POST /rents 201 (user, with guest role)', async () => {
-  console.log('normal')
   const { status, body } = await request(app())
     .post('/')
     .send({ access_token: userSession, house: house.id })
@@ -42,6 +43,7 @@ test('POST /rents 201 (user, with guest role)', async () => {
   expect(body.accepted).toEqual(false)
   expect(body.completed).toEqual(false)
   expect(typeof body.guest).toEqual('object')
+  console.log(body)
 })
 
 test('POST /rents 404 (user, without guest role)', async () => {
@@ -101,23 +103,98 @@ test('GET /rents/:id 404 (user)', async () => {
   expect(status).toBe(404)
 })
 
-test('PUT /rents/:id 200', async () => {
+test('GET /rents/:id/confirm 200 (host)', async () => {
   const { status, body } = await request(app())
-    .put(`/${rent.id}`)
-    .send({ house: anotherHouse, accepted: true, completed: false })
+    .get(`/${rent.id}/confirm`)
+    .query({ otp_token: rent.confirmation_token })
   expect(status).toBe(200)
   expect(typeof body).toEqual('object')
   expect(body.id).toEqual(rent.id)
-  expect(body.house).toEqual(anotherHouse.id)
-  expect(body.accepted).toEqual(true)
-  expect(body.completed).toEqual(false)
+  expect(typeof body.guest).toEqual('object')
+  expect(body.accepted).toBeTruthy()
+  expect(body.completed).toBeFalsy()
 })
 
-test('PUT /rents/:id 404', async () => {
-  const { status } = await request(app())
-    .put('/123456789098765432123456')
-    .send({ house: 'test', accepted: 'test', completed: 'test' })
-  expect(status).toBe(404)
+test('GET /rents/:id/confirm 401 (host, invalid confirmation token)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${rent.id}/confirm`)
+    .query({ otp_token: 'abcdef' })
+  expect(status).toBe(401)
+})
+
+// NOTE: no need to test for confirmed but incomplete requests; no crucial data should be changed in that case
+
+test('GET /rents/:id/confirm 401 (host, completed rent)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${rent_completed.id}/confirm`)
+    .query({ otp_token: rent_completed.confirmation_token })
+  expect(status).toBe(401)
+})
+
+test('GET /rents/:id/cancel 200 (host)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${rent.id}/cancel`)
+    .query({ otp_token: rent.confirmation_token })
+  expect(status).toBe(200)
+  expect(typeof body).toEqual('object')
+  expect(body.id).toEqual(rent.id)
+  expect(typeof body.guest).toEqual('object')
+  expect(body.accepted).toBeFalsy()
+  expect(body.completed).toBeTruthy()
+})
+
+test('GET /rents/:id/cancel 401 (host, invalid confirmation token)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${rent.id}/cancel`)
+    .query({ otp_token: 'abcdef' })
+  expect(status).toBe(401)
+  expect(rent.accepted).toBeFalsy()
+  expect(rent.completed).toBeFalsy()
+})
+
+test('GET /rents/:id/cancel 401 (host, completed rent)', async () => {
+  const { status, body } = await request(app())
+    .get(`/${rent_completed.id}/cancel`)
+    .query({ otp_token: rent_completed.confirmation_token })
+  expect(status).toBe(401)
+})
+
+test('PUT /rents/:id/finish 200 (guest, confirmed rent)', async () => {
+  const { status, body } = await request(app())
+    .put(`/${rent_confirmed.id}/finish`)
+    .send({ access_token: userSession })
+  expect(status).toBe(200)
+  expect(typeof body).toEqual('object')
+  expect(body.id).toEqual(rent_confirmed.id)
+  expect(body.completed).toBeTruthy()
+})
+
+test('PUT /rents/:id/finish 401 (guest, unconfirmed rent)', async () => {
+  const { status, body } = await request(app())
+    .put(`/${rent.id}/finish`)
+    .send({ access_token: userSession })
+  expect(status).toBe(401)
+})
+
+test('PUT /rents/:id/finish 401 (guest, completed rent)', async () => {
+  const { status, body } = await request(app())
+    .put(`/${rent_completed.id}/finish`)
+    .send({ access_token: userSession })
+  expect(status).toBe(401)
+})
+
+test('PUT /rents/:id/finish 401 (guest, refused rent)', async () => {
+  const { status, body } = await request(app())
+    .put(`/${rent_refused.id}/finish`)
+    .send({ access_token: userSession })
+  expect(status).toBe(401)
+})
+
+test('PUT /rents/:id/finish 401 (other guest)', async () => {
+  const { status, body } = await request(app())
+    .put(`/${rent_confirmed.id}/finish`)
+    .send({ access_token: anotherUserSession })
+  expect(status).toBe(401)
 })
 
 test('DELETE /rents/:id 204 (admin)', async () => {
