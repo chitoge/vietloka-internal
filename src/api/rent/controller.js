@@ -102,7 +102,7 @@ export const showRentHistory = ({ user }, res, next) =>
   House.find({owner: user})
     .populate('owner')
     .then(notFound(res))
-    .then((houses) => houses.map(Rent.find({house: house})))
+    .then((houses) => houses.map((house) => Rent.find({house: house})))
     .then((rents_) => _.concat(...rents_))
     .then(notFound(res))
     .then((rents) => rents.map((rent) => rent.view()))
