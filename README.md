@@ -1,4 +1,8 @@
-# Vietloka
+# Vietloka-internal
+
+[![Build Status](https://travis-ci.org/chitoge/vietloka-internal.svg?branch=master)](https://travis-ci.org/chitoge/vietloka-internal)
+[![Coverage Status](https://coveralls.io/repos/github/chitoge/vietloka-internal/badge.svg?branch=master)](https://coveralls.io/github/chitoge/vietloka-internal?branch=master)
+
 
 A RESTful API server for [Vietloka project](https://github.com/abn-volk/vietloka), built with the help of [Yeoman](http://yeoman.io/) and [generator-rest](https://github.com/diegohaz/generator-rest).
 

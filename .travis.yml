@@ -11,6 +11,8 @@ addons:
     - g++-4.8
 script:
   - npm test -- -i --coverage
+after_success:
+  - npm run coveralls
 env:
   global:
   - CXX=g++-4.8

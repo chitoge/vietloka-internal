@@ -14,7 +14,8 @@
     "prod": "cross-env NODE_ENV=production nodemon -i \"*.test.js\" -r dotenv-safe/config .",
     "lint": "eslint src",
     "docs": "apidoc -i src -o docs && apidoc-markdown -p docs -o DOCS.md",
-    "postdocs": "opn docs/index.html"
+    "postdocs": "opn docs/index.html",
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "jest": {
     "testEnvironment": "node",
@@ -52,6 +53,7 @@
     "bodymen": "^1.0.1",
     "compression": "^1.6.2",
     "cors": "^2.7.1",
+    "coveralls": "^2.13.1",
     "express": "^4.13.4",
     "express-force-ssl": "^0.3.2",
     "image-type": "^3.0.0",
