@@ -97,6 +97,18 @@ export const showSelf = ({ user }, res, next) =>
     .then(success(res))
     .catch(next)
 
+// view all rent history as Host
+export const showRentHistory = ({ user }, res, next) =>
+  House.find({owner: user})
+    .populate('owner')
+    .then(notFound(res))
+    .then((houses) => houses.map(Rent.find({house: house})))
+    .then((rents_) => _.concat(...rents_))
+    .then(notFound(res))
+    .then((rents) => rents.map((rent) => rent.view()))
+    .then(success(res))
+    .catch(next)
+
 // change Host confirmation status
 export const hostConfirm = ({ params, query }, res, next) =>
   Rent.findById(params.id)

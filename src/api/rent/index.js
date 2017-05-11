@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, destroy, hostConfirm, hostCancel, guestFinish, showSelf } from './controller'
+import { create, index, show, destroy, hostConfirm, hostCancel, guestFinish, showSelf, showRentHistory } from './controller'
 import { schema } from './model'
 export Rent, { schema } from './model'
 
@@ -43,6 +43,11 @@ router.get('/',
   token({ required: true, roles: ['admin'] }),
   query(),
   index)
+
+// get rents history as host
+router.get('/history',
+  token({ required: true }),
+  showRentHistory)
 
 /**
  * @api {get} /rents/:id Retrieve rent
