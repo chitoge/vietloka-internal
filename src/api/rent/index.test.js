@@ -84,6 +84,20 @@ test('GET /rents 401', async () => {
   expect(status).toBe(401)
 })
 
+test('GET /rents/mine 200 (user)', async () => {
+  const { status, body } = await request(app())
+    .get(`/mine`)
+    .query({ access_token: userSession })
+  expect(status).toBe(200)
+  expect(Array.isArray(body)).toBe(true)
+})
+
+test('GET /rents/mine 401', async () => {
+  const { status, body } = await request(app())
+    .get(`/mine`)
+  expect(status).toBe(401)
+})
+
 test('GET /rents/:id 200 (user)', async () => {
   const { status, body } = await request(app())
     .get(`/${rent.id}`)

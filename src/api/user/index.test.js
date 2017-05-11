@@ -99,7 +99,6 @@ test('GET /users/:id/as_host 200', async () => {
   expect(typeof body).toBe('object')
   expect(body.user.id).toBe(user1.id)
   expect(body.job).toBe(user1.job)
-  console.log(body)
 })
 
 test('GET /users/:id/as_guest 200', async () => {
@@ -109,6 +108,13 @@ test('GET /users/:id/as_guest 200', async () => {
   expect(typeof body).toBe('object')
   expect(body.user.id).toBe(user1.id)
   expect(body.nationality).toBe(guestRole.nationality)
+})
+
+test('GET /users/:id/houses 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${user1.id}/houses`)
+  expect(status).toBe(200)
+  expect(Array.isArray(body)).toBe(true)
 })
 
 test('GET /users/:id/as_host 404 (no user)', async () => {

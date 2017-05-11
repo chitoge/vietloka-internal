@@ -5,6 +5,8 @@ import { Host } from '../host'
 import { Rent } from '../rent'
 import { Comment } from '../comment'
 
+// currently buggy
+/* 
 export const checkTooManyPics = (res, addCount) => (house) => {
   if (house) {
     if ((house.images.length + addCount) <= 10) { // can it go overflow :v
@@ -14,6 +16,7 @@ export const checkTooManyPics = (res, addCount) => (house) => {
   }
   return null
 }
+*/
 
 export const create = ({ user, body }, res, next) =>
   Host.findOne({user: user.id, verified: true})
@@ -24,10 +27,10 @@ export const create = ({ user, body }, res, next) =>
     .then(success(res, 201))
     .catch(next)
 
-// image upload
+// image upload, currently buggy
+/*
 export const imageUpload = ({ user, files }, res, next) =>
   House.findById(params.id)
-    .then((t) => {console.log(t); return t})
     .populate('owner')
     .then(notFound(res))
     .then(authorOrAdmin(res, user, 'owner'))
@@ -36,7 +39,8 @@ export const imageUpload = ({ user, files }, res, next) =>
     .then((house) => house ? _.merge(house, {image: _.concat(house.image, files.map((file) => ('uploads/' + file.filename)))}) : null)
     .then((house) => house ? house.view(true) : null)
     .then(success(res, 201))
-    .catch((err) => {console.log(err); next(err)})
+    .catch(next)
+*/
 
 // TODO: implement advanced searching
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>

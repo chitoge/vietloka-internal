@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { success, notFound, authorOrAdmin, existed } from '../../services/response/'
+import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { Host } from '.'
 
 export const create = ({ user, body }, res, next) =>

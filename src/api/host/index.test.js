@@ -25,6 +25,13 @@ test('POST /hosts 201 (user)', async () => {
   expect(typeof body.user).toEqual('object')
 })
 
+test('POST /hosts 409 (user, had host role)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession })
+  expect(status).toBe(409)
+})
+
 test('POST /hosts 401', async () => {
   const { status } = await request(app())
     .post('/')
