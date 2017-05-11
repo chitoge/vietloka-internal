@@ -37,7 +37,7 @@ rentSchema.methods = {
     const view = {
       // simple view
       id: this.id,
-      guest: this.guest.view(full),
+      guest: this.guest.view(true),
       house: this.house,
       accepted: this.accepted,
       completed: this.completed,
