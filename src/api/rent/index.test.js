@@ -8,7 +8,7 @@ import routes, { Rent } from '.'
 
 const app = () => express(routes)
 
-let userSession, adminSession, anotherUserSession, rent, house, guest, anotherHouse, rent_confirmed, rent_completed, rent_refused
+let userSession, adminSession, anotherUserSession, rent, house, guest, anotherHouse, rent_confirmed, rent_completed, rent_refused, anotherHouse_2, anotherHouse_3, rent_1, rent_2, rent_3
 
 beforeEach(async () => {
   const user = await User.create({ email: 'a@a.com', password: '12345678' })
@@ -19,11 +19,16 @@ beforeEach(async () => {
   adminSession = signSync(admin.id)
   house = await House.create({ owner: anotherUser, title: 'what', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   anotherHouse = await House.create({ owner: user, title: 'what', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
+  anotherHouse_2 = await House.create({ owner: user, title: 'what', address: 'Address ghi', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
+  anotherHouse_3 = await House.create({ owner: user, title: 'what', address: 'Address jkl', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   guest = await Guest.create({ nationality: 'Terran', user })
   rent = await Rent.create({ guest: user, house: house })
   rent_confirmed = await Rent.create({ guest: user, house: house, accepted: true, completed: false })
   rent_completed = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
   rent_refused = await Rent.create({ guest: user, house: house, accepted: false, completed: true })
+  rent_1 = await Rent.create({ guest: anotherUser, house: anotherHouse, accepted: true, completed: true })
+  rent_2 = await Rent.create({ guest: anotherUser, house: anotherHouse, accepted: true, completed: true })
+  rent_3 = await Rent.create({ guest: anotherUser, house: anotherHouse_2, accepted: true, completed: true })
 })
 
 test('POST /rents 404 (user, imaginary house)', async () => {
@@ -43,7 +48,6 @@ test('POST /rents 201 (user, with guest role)', async () => {
   expect(body.accepted).toEqual(false)
   expect(body.completed).toEqual(false)
   expect(typeof body.guest).toEqual('object')
-  console.log(body)
 })
 
 test('POST /rents 404 (user, without guest role)', async () => {
@@ -101,6 +105,14 @@ test('GET /rents/:id 404 (user)', async () => {
     .get('/123456789098765432123456')
     .query({ access_token: userSession })
   expect(status).toBe(404)
+})
+
+test('GET /rents/history 200 (user)', async () => {
+  const { status, body } = await request(app())
+    .get(`/history`)
+    .query({ access_token: userSession })
+  expect(status).toBe(200)
+  expect(Array.isArray(body)).toBe(true)
 })
 
 test('GET /rents/:id/confirm 200 (host)', async () => {
