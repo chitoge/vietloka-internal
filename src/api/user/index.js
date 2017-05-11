@@ -106,7 +106,7 @@ router.post('/',
  */
 router.put('/:id',
   token({ required: true }),
-  body({ name, picture }),
+  body({ name, picture, job: {type: String, required: false}, dateOfBirth: {type: Date, required: false}, placeOfWork: {type: String, required: false}, gender: {type: String, required: false}, identityNumber: {type: String, required: false} }),
   update)
 
 /**

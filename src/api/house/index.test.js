@@ -6,6 +6,7 @@ import { Host } from '../host'
 import { Rent } from '../rent'
 import { Comment } from '../comment'
 import routes, { House } from '.'
+import path from 'path'
 
 const app = () => express(routes)
 
@@ -18,7 +19,7 @@ beforeEach(async () => {
   anotherSession = signSync(anotherUser.id)
   // like requirement, this user must have host role
   leHost = await Host.create({ user })
-  house = await House.create({ owner: user, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
+  house = await House.create({ owner: user, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: [], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
   otherHouse = await House.create({ owner: anotherUser, title: 'Some clickbaits', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12, lng: 56}, hasInternet: true, WC: "of course" })
   const rent_1 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
   const rent_2 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
@@ -116,6 +117,17 @@ test('GET /houses/:id 404', async () => {
   const { status } = await request(app())
     .get('/123456789098765432123456')
   expect(status).toBe(404)
+})
+
+test('POST /houses/:id/upload_photos 201', async () => {
+  const { status, body } = await request(app())
+    .post(`/${house.id}/upload_photos`)
+    .set({"Authorization": "Bearer " + userSession})
+    .attach('house_photos', path.join(__dirname, '../../../test_data/triggered.jpg'))
+  expect(status).toBe(201)
+  expect(typeof body).toEqual('object')
+  expect(body.id).toBe(house.id)
+  expect(body.image).toBeTruthy()
 })
 
 test('PUT /houses/:id 200 (user)', async () => {

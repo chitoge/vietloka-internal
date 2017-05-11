@@ -4,6 +4,7 @@ import cors from 'cors'
 import compression from 'compression'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
+import path from 'path'
 import { errorHandler as queryErrorHandler } from 'querymen'
 import { errorHandler as bodyErrorHandler } from 'bodymen'
 import { env } from '../../config'
@@ -32,6 +33,7 @@ export default (routes) => {
   app.use(routes)
   app.use(queryErrorHandler())
   app.use(bodyErrorHandler())
+  app.use('/uploads', express.static(path.join(__dirname, '..', '..', '..', 'uploads')))
 
   return app
 }

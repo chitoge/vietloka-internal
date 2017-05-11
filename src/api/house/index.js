@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showSelf, showRating, showComments } from './controller'
+import { create, index, show, update, destroy, showSelf, showRating, showComments, imageUpload } from './controller'
 export House, { schema } from './model'
 
 const router = new Router()
+const multer  = require('multer')
+import path from 'path'
 
 /**
  * @api {post} /houses Create house
@@ -61,6 +63,18 @@ router.get('/:id/ratings',
 
 router.get('/:id/comments',
   showComments)
+
+router.post('/:id/upload_photos',
+  multer({
+    dest: path.join(__dirname, '../../../uploads'),
+    onFileUploadStart: function (file) {
+      console.log(file.originalname + ' is starting ...')
+    },
+    onFileUploadComplete: function (file) {
+      console.log(file.fieldname + ' uploaded to  ' + file.path)
+    }
+  }).array('house_photos', 10),
+  imageUpload)
 
 /**
  * @api {put} /houses/:id Update house

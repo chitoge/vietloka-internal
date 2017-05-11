@@ -11,7 +11,7 @@ const app = () => express(routes)
 let user1, user2, admin, session1, session2, adminSession, hostRole, guestRole
 
 beforeEach(async () => {
-  user1 = await User.create({ name: 'user', email: 'a@a.com', password: '12345678', job: 'MEAN Developer' })
+  user1 = await User.create({ name: 'user', email: 'a@a.com', password: '12345678', job: 'MEAN Developer', gender: 'Attack Helicopter', placeOfWork: 'Tran Duy Hung str.', dateOfBirth: Date.now() })
   user2 = await User.create({ name: 'user', email: 'b@b.com', password: '12345678' })
   admin = await User.create({ email: 'c@c.com', password: '12345678', role: 'admin' })
   hostRole = await Host.create({ user: user1 })
@@ -99,6 +99,7 @@ test('GET /users/:id/as_host 200', async () => {
   expect(typeof body).toBe('object')
   expect(body.user.id).toBe(user1.id)
   expect(body.job).toBe(user1.job)
+  console.log(body)
 })
 
 test('GET /users/:id/as_guest 200', async () => {
@@ -245,7 +246,7 @@ test('POST /users 401', async () => {
 test('PUT /users/me 200 (user)', async () => {
   const { status, body } = await request(app())
     .put('/me')
-    .send({ access_token: session1, name: 'test' })
+    .send({ access_token: session1, name: 'test', job: 'Dev' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.name).toBe('test')

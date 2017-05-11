@@ -3,6 +3,7 @@ import { success, notFound } from '../../services/response/'
 import { User } from '.'
 import { Host } from '../host'
 import { Guest } from '../guest'
+import { House } from '../house'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.find(query, select, cursor)
@@ -22,7 +23,7 @@ export const showHost = ({ params }, res, next) =>
     .then(notFound(res))
     .then((user) => Host.findOne({user: user}).populate('user'))
     .then(notFound(res))
-    .then((host) => host ? host.view(true) : null)
+    .then((host) => host ? host.view() : null)
     .then(success(res))
     .catch(next)
 
@@ -37,6 +38,15 @@ export const showGuest = ({ params }, res, next) =>
 
 export const showMe = ({ user }, res) =>
   res.json(user.view(true))
+
+export const showHouses = ({ params }, res, next) =>
+  User.findById(params.id)
+    .then(notFound(res))
+    .then((user) => House.find({owner: user}).populate('owner'))
+    .then(notFound(res))
+    .then((houses) => houses ? houses.map((house) => house.view()) : null)
+    .then(success(res))
+    .catch(next)
 
 export const create = ({ bodymen: { body } }, res, next) =>
   User.create(body)
@@ -71,7 +81,7 @@ export const update = ({ bodymen: { body }, params, user }, res, next) =>
       }
       return result
     })
-    .then((user) => user ? _.merge(user, body).save() : null)
+    .then((user) => user ? _.merge(user, _.omitBy(body, _.isNil)).save() : null)
     .then((user) => user ? user.view(true) : null)
     .then(success(res))
     .catch(next)
