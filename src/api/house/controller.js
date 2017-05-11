@@ -74,9 +74,9 @@ export const showComments = ({ params }, res, next) =>
     .populate('owner')
     .then(notFound(res))
     .then((house) => house ? Rent.find({house: house, accepted: true, completed: true}, "_id") : null)
-    .then((rents) => Promise.all(rents.map((rent) => Comment.findOne({rent: rent}, {_id: true}))))
+    .then((rents) => Promise.all(rents.map((rent) => Comment.findOne({rent: rent}).populate('guest').populate('rent'))))
     .then((comments) => comments.filter(Boolean))
-    .then((comments) => comments.map((cmt) => cmt._id))
+    .then((comments) => comments.map((cmt) => cmt.view()))
     .then(success(res))
     .catch(next)
 
