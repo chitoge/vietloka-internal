@@ -85,7 +85,7 @@ export const show = ({ params }, res, next) =>
     .populate('guest')
     .populate('house')
     .then(notFound(res))
-    .then((rent) => rent ? rent.view() : null)
+    .then((rent) => rent ? rent.view(true) : null)
     .then(success(res))
     .catch(next)
 
@@ -107,7 +107,7 @@ export const hostConfirm = ({ params, query }, res, next) =>
     // verify confirmation token
     .then(tokenMatch(res, query.otp_token))
     .then((rent) => rent ? _.merge(rent, {accepted: true, completed: false}).save() : null)
-    .then((rent) => rent ? rent.view(true) : null)
+    .then((rent) => rent ? rent.view() : null)
     .then(success(res))
     .catch(next)
 
@@ -120,7 +120,7 @@ export const hostCancel = ({ params, query }, res, next) =>
     // verify confirmation token
     .then(tokenMatch(res, query.otp_token))
     .then((rent) => rent ? _.merge(rent, {accepted: false, completed: true}).save() : null)
-    .then((rent) => rent ? rent.view(true) : null)
+    .then((rent) => rent ? rent.view() : null)
     .then(success(res))
     .catch(next)
 
@@ -138,7 +138,7 @@ export const guestFinish = ({ user, params }, res, next) =>
     .then(checkVerifiedRequest(res))
     //.then((rent) => {console.log('verified');console.log(rent); return rent})
     .then((rent) => rent ? _.merge(rent, {completed: true}).save() : null)
-    .then((rent) => rent ? rent.view(true) : null)
+    .then((rent) => rent ? rent.view() : null)
     //.then((rent) => {console.log(rent); return rent})
     .then(success(res))
     .catch(next)

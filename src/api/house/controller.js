@@ -80,6 +80,16 @@ export const showComments = ({ params }, res, next) =>
     .then(success(res))
     .catch(next)
 
+// show all rents on a house that associated with an user
+export const showUserRents = ({ params, user }, res, next) =>
+  House.findById(params.id)
+    .populate('owner')
+    .then(notFound(res))
+    .then((house) => house ? Rent.find({house: house, guest: user}) : null)
+    .then((rents) => rents ? rents.map((rent) => rent.view()) : null)
+    .then(success(res))
+    .catch(next)
+
 export const showSelf = ({ user }, res, next) =>
   House.find({owner : user})
     .populate('owner')

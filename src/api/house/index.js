@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, showSelf, showRating, showComments, imageUpload } from './controller'
+import { create, index, show, update, destroy, showSelf, showRating, showComments, imageUpload, showUserRents } from './controller'
 export House, { schema } from './model'
 
 const router = new Router()
@@ -63,6 +63,10 @@ router.get('/:id/ratings',
 
 router.get('/:id/comments',
   showComments)
+
+router.get('/:id/rent_history',
+  token({ required: true }),
+  showUserRents)
 
 router.post('/:id/upload_photos',
   multer({
