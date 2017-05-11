@@ -15,4 +15,4 @@ env:
   global:
   - CXX=g++-4.8
   - MASTER_KEY=thisIsMyTravisMasterkey
-  - JWT_SECRET=thisIsNotMyTravisJWTSecret
+  - JWT_SECRET=thisIsNotMyTravisJWTSecret!
