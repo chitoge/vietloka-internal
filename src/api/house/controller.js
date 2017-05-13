@@ -72,6 +72,16 @@ export const showRating = ({ params }, res, next) =>
     .then(success(res))
     .catch(next)
 
+// count current guests in a house
+export const showCurrentStaying = ({ params }, res, next) =>
+  House.findById(params.id)
+    .populate('owner')
+    .then(notFound(res))
+    .then((house) => house ? Rent.count({house: house, accepted: true, completed: false}) : null)
+    .then((cnt) => { return {count: cnt} })
+    .then(success(res))
+    .catch(next)
+
 // show all comments about this house; returns id only
 export const showComments = ({ params }, res, next) =>
   House.findById(params.id)

@@ -47,7 +47,6 @@ export const checkCustomer = (res, user) => (current_rent) => {
 }
 
 // in order to rent, one must have Guest capability
-// TODO: validate CSRF token
 // TODO: verify payment information
 export const create = ({ user, bodymen: { body } }, res, next) =>
   Guest.findOne({user: user.id, verified: true})
@@ -56,6 +55,25 @@ export const create = ({ user, bodymen: { body } }, res, next) =>
     .then((guest) => mongoose.Types.ObjectId.isValid(body.house) ? House.findById(body.house) : null)
     .then(notFound(res))
     // validate house capacity
+    .then((house) => Promise.all([house, Rent.count({house: house, accepted: true, completed: false})]))
+    .then((stuffs) => {
+      if (stuffs[0].numOfTotalSlots > stuffs[1]) {
+      return stuffs[0]
+    }
+    else {
+      res.status(413).end() // payload too large
+      return null
+    }})
+    // check if there are pending requests; no more requests if currently staying at this place or already placed an request
+    .then((house) => Promise.all([house, Rent.count({house: house, guest: user, completed: false})]))
+    .then((stuffs) => {
+      if (stuffs[1] > 0) {
+        res.status(409).end() // conflict
+        return null
+      }
+      return stuffs[0]
+    })
+    // actually create an object
     .then((house_) => house_ ? Rent.create({ house: house_.id, guest: user, accepted: false, completed: false }) : null)
     // notify host for confirmation
     .then((rent) => rent.view(true))

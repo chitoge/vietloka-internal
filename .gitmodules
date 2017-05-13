@@ -1,0 +1,4 @@
+[submodule "vietloka"]
+	path = vietloka
+	url = https://github.com/abn-volk/vietloka
+	branch = master

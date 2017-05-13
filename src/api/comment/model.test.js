@@ -15,8 +15,6 @@ beforeEach(async () => {
 describe('view', () => {
   it('returns simple view', () => {
     const view = comment.view()
-    console.log(view)
-    console.log(comment)
     expect(typeof view).toBe('object')
     expect(view.id).toBe(comment.id)
     expect(typeof view.guest).toBe('object')

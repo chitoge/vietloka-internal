@@ -17,8 +17,8 @@ beforeEach(async () => {
   userSession = signSync(user.id)
   anotherUserSession = signSync(anotherUser.id)
   adminSession = signSync(admin.id)
-  house = await House.create({ owner: anotherUser, title: 'what', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 2, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
-  anotherHouse = await House.create({ owner: user, title: 'what', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
+  house = await House.create({ owner: anotherUser, title: 'what', address: 'Address abc', numOfMember: 2, hasChildren: true, hasOlders: false, area: 6969, price: 12696, numOfTotalSlots: 3, houseAspect: 'kanye west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
+  anotherHouse = await House.create({ owner: user, title: 'what', address: 'Address def', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 1, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   anotherHouse_2 = await House.create({ owner: user, title: 'what', address: 'Address ghi', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   anotherHouse_3 = await House.create({ owner: user, title: 'what', address: 'Address jkl', numOfMember: 2, hasChildren: true, hasOlders: false, area: 7070, price: 12696, numOfTotalSlots: 2, houseAspect: 'north west', image: ['abc.jpg', 'def.tga'], map: {lat: 12.34, lng: 56.78}, hasInternet: true, WC: "of course" })
   guest = await Guest.create({ nationality: 'Terran', user })
@@ -29,6 +29,8 @@ beforeEach(async () => {
   rent_1 = await Rent.create({ guest: anotherUser, house: anotherHouse, accepted: true, completed: true })
   rent_2 = await Rent.create({ guest: anotherUser, house: anotherHouse, accepted: true, completed: true })
   rent_3 = await Rent.create({ guest: anotherUser, house: anotherHouse_2, accepted: true, completed: true })
+  const rent_4 = await Rent.create({ guest: anotherUser, house: anotherHouse, accepted: true, completed: false })
+  const rent_5 = await Rent.create({ guest: user, house: anotherHouse_3, accepted: false, completed: false })
 })
 
 test('POST /rents 404 (user, imaginary house)', async () => {
@@ -41,13 +43,34 @@ test('POST /rents 404 (user, imaginary house)', async () => {
 test('POST /rents 201 (user, with guest role)', async () => {
   const { status, body } = await request(app())
     .post('/')
-    .send({ access_token: userSession, house: house.id })
+    .send({ access_token: userSession, house: anotherHouse_2.id })
   expect(status).toBe(201)
   expect(typeof body).toEqual('object')
-  expect(body.house).toBe(house.id)
+  expect(body.house).toBe(anotherHouse_2.id)
   expect(body.accepted).toEqual(false)
   expect(body.completed).toEqual(false)
   expect(typeof body.guest).toEqual('object')
+})
+
+test('POST /rents 413 (user, with guest role, full house)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession, house: anotherHouse.id })
+  expect(status).toBe(413)
+})
+
+test('POST /rents 409 (user, with guest role, already staying)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession, house: house.id })
+  expect(status).toBe(409)
+})
+
+test('POST /rents 409 (user, with guest role, already sent a request)', async () => {
+  const { status, body } = await request(app())
+    .post('/')
+    .send({ access_token: userSession, house: anotherHouse_3.id })
+  expect(status).toBe(409)
 })
 
 test('POST /rents 404 (user, without guest role)', async () => {

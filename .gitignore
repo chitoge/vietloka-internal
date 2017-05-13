@@ -9,6 +9,7 @@ docs
 .env
 npm-debug.log
 .nyc_output
+.coveralls.yml
 coverage
 cassettes
 uploads/**

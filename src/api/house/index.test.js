@@ -29,6 +29,7 @@ beforeEach(async () => {
   const rent_6 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
   const rent_7 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
   const rent_8 = await Rent.create({ guest: user, house: house, accepted: true, completed: true })
+  const rent_staying = await Rent.create({ guest: user, house: house, accepted: true, completed: false })
   const otherRent_1 = await Rent.create({ guest: user, house: otherHouse, accepted: true, completed: true })
   const otherRent_2 = await Rent.create({ guest: user, house: otherHouse, accepted: true, completed: true })
   const comment_1 = await Comment.create({ guest: user, rent: rent_1, title: "Feels good man", content: "Trump is number 1! Long live America! Hail victory! Hail teh peoplez!", approves: true })
@@ -104,6 +105,25 @@ test('GET /houses/:id/ratings 200', async () => {
   expect(status).toBe(200)
   expect(body.approval).toBe(4)
   expect(body.disapproval).toBe(3)
+})
+
+test('GET /houses/:id/ratings 404', async () => {
+  const { status, body } = await request(app())
+    .get(`/123456789098765432123456/ratings`)
+  expect(status).toBe(404)
+})
+
+test('GET /houses/:id/current_staying 200', async () => {
+  const { status, body } = await request(app())
+    .get(`/${house.id}/current_staying`)
+  expect(status).toBe(200)
+  expect(body.count).toBe(1)
+})
+
+test('GET /houses/:id/current_staying 404', async () => {
+  const { status, body } = await request(app())
+    .get(`/123456789098765432123456/current_staying`)
+  expect(status).toBe(404)
 })
 
 test('GET /houses/:id/comments 200', async () => {
